@@ -124,6 +124,11 @@ public class MainScreen extends javax.swing.JFrame {
         ProjectsTitle.setText("Projetos");
 
         ProjectsAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/add.png"))); // NOI18N
+        ProjectsAdd.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ProjectsAddMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout ProjectsLayout = new javax.swing.GroupLayout(Projects);
         Projects.setLayout(ProjectsLayout);
@@ -292,6 +297,12 @@ public class MainScreen extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void ProjectsAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ProjectsAddMouseClicked
+        // TODO add your handling code here:
+        ProjectDialogScreen projectDialogScreen = new ProjectDialogScreen(this, rootPaneCheckingEnabled);
+        projectDialogScreen.setVisible(true);
+    }//GEN-LAST:event_ProjectsAddMouseClicked
 
     /**
      * @param args the command line arguments
