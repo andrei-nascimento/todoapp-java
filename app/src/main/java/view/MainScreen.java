@@ -13,6 +13,8 @@ import java.awt.event.WindowEvent;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import model.Project;
+import model.Task;
+import util.TaskTableModel;
 
 /**
  *
@@ -23,7 +25,8 @@ public class MainScreen extends javax.swing.JFrame {
     ProjectController projectController;
     TaskController taskController;
     
-    DefaultListModel projectModel;
+    DefaultListModel projectsModel;
+    TaskTableModel taskModel;
     
     public MainScreen() {
         initComponents();
@@ -59,7 +62,7 @@ public class MainScreen extends javax.swing.JFrame {
         ProjectItems = new javax.swing.JList<>();
         TaskList = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        TableTasks = new javax.swing.JTable();
+        jTableTasks = new javax.swing.JTable();
 
         EmptyList.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -229,8 +232,8 @@ public class MainScreen extends javax.swing.JFrame {
         TaskList.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         TaskList.setForeground(new java.awt.Color(255, 255, 255));
 
-        TableTasks.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        TableTasks.setModel(new javax.swing.table.DefaultTableModel(
+        jTableTasks.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jTableTasks.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -256,12 +259,13 @@ public class MainScreen extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        TableTasks.setGridColor(new java.awt.Color(255, 255, 255));
-        TableTasks.setRowHeight(50);
-        TableTasks.setSelectionBackground(new java.awt.Color(0, 177, 116));
-        TableTasks.setShowGrid(false);
-        TableTasks.setShowHorizontalLines(true);
-        jScrollPane1.setViewportView(TableTasks);
+        jTableTasks.setGridColor(new java.awt.Color(255, 255, 255));
+        jTableTasks.setRowHeight(50);
+        jTableTasks.setSelectionBackground(new java.awt.Color(0, 177, 116));
+        jTableTasks.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jTableTasks.setShowGrid(false);
+        jTableTasks.setShowHorizontalLines(true);
+        jScrollPane1.setViewportView(jTableTasks);
 
         javax.swing.GroupLayout TaskListLayout = new javax.swing.GroupLayout(TaskList);
         TaskList.setLayout(TaskListLayout);
@@ -375,7 +379,6 @@ public class MainScreen extends javax.swing.JFrame {
     private javax.swing.JPanel Projects;
     private javax.swing.JLabel ProjectsAdd;
     private javax.swing.JLabel ProjectsTitle;
-    private javax.swing.JTable TableTasks;
     private javax.swing.JPanel TaskList;
     private javax.swing.JPanel Tasks;
     private javax.swing.JLabel TasksAdd;
@@ -383,17 +386,18 @@ public class MainScreen extends javax.swing.JFrame {
     private javax.swing.JPanel Toolbar;
     private javax.swing.JLabel ToolbarTitle;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTableTasks;
     // End of variables declaration//GEN-END:variables
 
     public void decorateTableTasks() {
         
         // Customizando o header da table tarefas
-        TableTasks.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 16));
-        TableTasks.getTableHeader().setBackground(new Color(0,153,102));
-        TableTasks.getTableHeader().setForeground(new Color(255,255,255));
+        jTableTasks.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 16));
+        jTableTasks.getTableHeader().setBackground(new Color(0,153,102));
+        jTableTasks.getTableHeader().setForeground(new Color(255,255,255));
         
         //Criando um sort automático para as colunas da table
-        TableTasks.setAutoCreateRowSorter(true);
+        jTableTasks.setAutoCreateRowSorter(true);
     }
     
     public void initDataController() {
@@ -402,18 +406,27 @@ public class MainScreen extends javax.swing.JFrame {
     }
     
     public void initComponentsModel() {
-        projectModel = new DefaultListModel();
+        projectsModel = new DefaultListModel();
         loadProjects();
+        
+        taskModel = new TaskTableModel();
+        jTableTasks.setModel(taskModel);
+        loadTasks(3);
+    }
+    
+    public void loadTasks(int idProject) {
+        List<Task> tasks = taskController.getAll(idProject);
+        taskModel.setTasks(tasks);
     }
     
     public void loadProjects() {
         List<Project> projects = projectController.getAll();
-        projectModel.clear();
+        projectsModel.clear();
         
         for (int i = 0; i < projects.size(); i++) {
             Project project = projects.get(i);
-            projectModel.addElement(project);
+            projectsModel.addElement(project);
         }
-        ProjectItems.setModel(projectModel);
+        ProjectItems.setModel(projectsModel);
     }
 }
